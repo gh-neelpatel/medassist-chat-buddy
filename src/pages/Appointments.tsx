@@ -1,0 +1,239 @@
+
+import React, { useState } from 'react';
+import { Menu, Calendar, Clock, MapPin } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Navbar from "@/components/Navbar";
+import Sidebar from "@/components/Sidebar";
+
+interface Appointment {
+  id: string;
+  doctorName: string;
+  specialty: string;
+  date: string;
+  time: string;
+  location: string;
+  status: 'upcoming' | 'completed' | 'cancelled';
+}
+
+const Appointments = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+  
+  // Mock data - in a real app, this would come from an API
+  const appointments: Appointment[] = [
+    {
+      id: '1',
+      doctorName: 'Dr. Sarah Johnson',
+      specialty: 'Cardiologist',
+      date: '2024-04-28',
+      time: '10:00 AM',
+      location: '123 Medical Center Dr, Suite 101',
+      status: 'upcoming'
+    },
+    {
+      id: '2',
+      doctorName: 'Dr. Emily Rodriguez',
+      specialty: 'Primary Care',
+      date: '2024-05-15',
+      time: '2:30 PM',
+      location: '789 Wellness Ave, Suite 205',
+      status: 'upcoming'
+    },
+    {
+      id: '3',
+      doctorName: 'Dr. Michael Chen',
+      specialty: 'Cardiologist',
+      date: '2024-04-10',
+      time: '9:15 AM',
+      location: '456 Health Parkway, Building B',
+      status: 'completed'
+    },
+    {
+      id: '4',
+      doctorName: 'Dr. James Wilson',
+      specialty: 'Neurologist',
+      date: '2024-03-22',
+      time: '11:30 AM',
+      location: '567 Brain Health Center',
+      status: 'cancelled'
+    }
+  ];
+  
+  const getStatusBadgeStyles = (status: 'upcoming' | 'completed' | 'cancelled') => {
+    switch (status) {
+      case 'upcoming':
+        return 'bg-primary/10 text-primary';
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+  
+  const upcomingAppointments = appointments.filter(app => app.status === 'upcoming');
+  const pastAppointments = appointments.filter(app => app.status === 'completed' || app.status === 'cancelled');
+  
+  return (
+    <div className="min-h-screen flex flex-col bg-offwhite">
+      <Navbar />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="container max-w-5xl mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold">Appointments</h1>
+                <p className="text-muted-foreground">Manage your healthcare appointments</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" className="hidden md:inline-flex">
+                  View Calendar
+                </Button>
+                <Button>Schedule Appointment</Button>
+                <Button size="icon" variant="outline" className="md:hidden" onClick={toggleSidebar}>
+                  <Menu size={20} />
+                </Button>
+              </div>
+            </div>
+            
+            <Tabs defaultValue="upcoming" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+                <TabsTrigger value="past">Past</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="upcoming" className="space-y-4">
+                {upcomingAppointments.length > 0 ? (
+                  <div className="grid gap-4">
+                    {upcomingAppointments.map((appointment) => (
+                      <Card key={appointment.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">{appointment.doctorName}</CardTitle>
+                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(appointment.status)}`}>
+                              {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{appointment.specialty}</p>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <Calendar size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">
+                                {new Date(appointment.date).toLocaleDateString(undefined, {
+                                  weekday: 'long',
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Clock size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">{appointment.time}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <MapPin size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">{appointment.location}</p>
+                            </div>
+                          </div>
+                          <div className="flex justify-end gap-2 pt-2">
+                            <Button variant="outline" size="sm">Reschedule</Button>
+                            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                              Cancel
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 bg-muted/50 rounded-lg">
+                    <Calendar size={40} className="mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">No upcoming appointments</h3>
+                    <p className="text-muted-foreground mb-4">Schedule an appointment with a healthcare provider</p>
+                    <Button>Schedule Appointment</Button>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="past" className="space-y-4">
+                {pastAppointments.length > 0 ? (
+                  <div className="grid gap-4">
+                    {pastAppointments.map((appointment) => (
+                      <Card key={appointment.id}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">{appointment.doctorName}</CardTitle>
+                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeStyles(appointment.status)}`}>
+                              {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{appointment.specialty}</p>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <div className="flex items-start gap-2">
+                            <Calendar size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">
+                                {new Date(appointment.date).toLocaleDateString(undefined, {
+                                  weekday: 'long',
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Clock size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">{appointment.time}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <MapPin size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm">{appointment.location}</p>
+                            </div>
+                          </div>
+                          {appointment.status === 'completed' && (
+                            <div className="flex justify-end gap-2 pt-2">
+                              <Button variant="outline" size="sm">View Summary</Button>
+                              <Button size="sm">Book Follow-up</Button>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 bg-muted/50 rounded-lg">
+                    <Calendar size={40} className="mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">No past appointments</h3>
+                    <p className="text-muted-foreground">Your appointment history will appear here</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Appointments;
