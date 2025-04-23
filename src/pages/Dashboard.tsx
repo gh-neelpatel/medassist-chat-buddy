@@ -25,7 +25,7 @@ const Dashboard = () => {
           <div className="container max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Welcome back, John</h1>
+                <h1 className="text-2xl md:text-3xl font-bold">Welcome back, Neel</h1>
                 <p className="text-muted-foreground">Here's an overview of your health</p>
               </div>
               <Button size="icon" variant="outline" className="md:hidden" onClick={toggleSidebar}>
@@ -49,3 +49,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
