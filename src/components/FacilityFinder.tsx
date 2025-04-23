@@ -21,8 +21,8 @@ interface Facility {
 
 const FacilityFinder = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [facilityType, setFacilityType] = useState('');
-  const [distance, setDistance] = useState('');
+  const [facilityType, setFacilityType] = useState('all');
+  const [distance, setDistance] = useState('any');
   
   // Mock data - in a real app, this would come from an API
   const facilities: Facility[] = [
@@ -80,7 +80,7 @@ const FacilityFinder = () => {
       facility.services.some(service => service.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesType = 
-      facilityType === '' || 
+      facilityType === 'all' || 
       facility.type.toLowerCase() === facilityType.toLowerCase();
     
     return matchesSearch && matchesType;
@@ -115,7 +115,7 @@ const FacilityFinder = () => {
                       <SelectValue placeholder="Facility Type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="hospital">Hospital</SelectItem>
                       <SelectItem value="urgent care">Urgent Care</SelectItem>
                       <SelectItem value="clinic">Clinic</SelectItem>
@@ -127,7 +127,7 @@ const FacilityFinder = () => {
                       <SelectValue placeholder="Distance" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any Distance</SelectItem>
+                      <SelectItem value="any">Any Distance</SelectItem>
                       <SelectItem value="5">Within 5 miles</SelectItem>
                       <SelectItem value="10">Within 10 miles</SelectItem>
                       <SelectItem value="25">Within 25 miles</SelectItem>
@@ -144,7 +144,7 @@ const FacilityFinder = () => {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">
           {filteredFacilities.length} 
-          {facilityType ? ` ${facilityType}` : ' healthcare'} facilities found
+          {facilityType !== 'all' ? ` ${facilityType}` : ' healthcare'} facilities found
         </h3>
         
         <div className="grid grid-cols-1 gap-4">

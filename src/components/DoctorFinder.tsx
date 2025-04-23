@@ -18,8 +18,8 @@ interface Doctor {
 
 const DoctorFinder = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [specialty, setSpecialty] = useState('');
-  const [location, setLocation] = useState('');
+  const [specialty, setSpecialty] = useState('all');
+  const [location, setLocation] = useState('all');
   
   // Mock data for doctors
   const doctors: Doctor[] = [
@@ -56,8 +56,8 @@ const DoctorFinder = () => {
   const filteredDoctors = doctors.filter(doctor => {
     const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSpecialty = specialty === '' || doctor.specialty === specialty;
-    const matchesLocation = location === '' || doctor.location.includes(location);
+    const matchesSpecialty = specialty === 'all' || doctor.specialty === specialty;
+    const matchesLocation = location === 'all' || doctor.location.includes(location);
     
     return matchesSearch && matchesSpecialty && matchesLocation;
   });
@@ -101,6 +101,7 @@ const DoctorFinder = () => {
                 <SelectValue placeholder="Specialty" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All Specialties</SelectItem>
                 <SelectItem value="Cardiologist">Cardiologist</SelectItem>
                 <SelectItem value="Family Medicine">Family Medicine</SelectItem>
                 <SelectItem value="Pediatrician">Pediatrician</SelectItem>
@@ -115,6 +116,7 @@ const DoctorFinder = () => {
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="all">All Locations</SelectItem>
                 <SelectItem value="Downtown Medical Center">Downtown Medical Center</SelectItem>
                 <SelectItem value="Community Health Clinic">Community Health Clinic</SelectItem>
                 <SelectItem value="Children's Medical Group">Children's Medical Group</SelectItem>
