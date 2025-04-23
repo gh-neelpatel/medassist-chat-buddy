@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Clock, X } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -68,12 +68,7 @@ const AppointmentReschedule: React.FC<AppointmentRescheduleProps> = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="flex justify-between items-center">
-            Reschedule Appointment
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
+          <DialogTitle>Reschedule Appointment</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
@@ -156,3 +151,4 @@ const AppointmentReschedule: React.FC<AppointmentRescheduleProps> = ({
 };
 
 export default AppointmentReschedule;
+
