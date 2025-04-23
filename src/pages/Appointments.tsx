@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Menu, Calendar, Clock, MapPin, PhoneCall } from 'lucide-react';
+import { Menu, Calendar, Clock, MapPin, PhoneCall, HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,13 +16,13 @@ const Appointments = () => {
   const [isCalendarViewOpen, setIsCalendarViewOpen] = useState(false);
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isContactSupportOpen, setIsContactSupportOpen] = useState(false);
+  const [isSoftwareSupportOpen, setIsSoftwareSupportOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
   
-  // Mock data - in a real app, this would come from an API
   const appointments: Appointment[] = [
     {
       id: '1',
@@ -93,7 +92,8 @@ const Appointments = () => {
   };
   
   const handleScheduleAppointment = () => {
-    toast.info("Schedule appointment feature will be available soon");
+    toast.success("You've been directed to the appointment scheduling system");
+    window.open("https://example.com/book-appointment", "_blank");
   };
 
   const handleViewCalendar = () => {
@@ -103,6 +103,10 @@ const Appointments = () => {
   const handleContactSupport = (appointment: Appointment | null = null) => {
     setSelectedAppointment(appointment);
     setIsContactSupportOpen(true);
+  };
+
+  const handleSoftwareSupport = () => {
+    setIsSoftwareSupportOpen(true);
   };
   
   return (
@@ -276,11 +280,29 @@ const Appointments = () => {
                 )}
               </TabsContent>
             </Tabs>
+            
+            <div className="mt-8 bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <HelpCircle className="h-6 w-6 text-blue-500 mt-0.5" />
+                <div>
+                  <h3 className="text-lg font-medium mb-1">Need help?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Contact our support team for assistance with using MedAssist.
+                  </p>
+                  <Button
+                    onClick={handleSoftwareSupport}
+                    variant="outline"
+                    className="bg-white border-blue-200 hover:bg-blue-100"
+                  >
+                    Contact Support
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
       </div>
       
-      {/* Dialogs */}
       <AppointmentCalendarView
         appointments={appointments}
         open={isCalendarViewOpen}
@@ -306,6 +328,12 @@ const Appointments = () => {
           setIsContactSupportOpen(false);
           setSelectedAppointment(null);
         }}
+      />
+
+      <ContactSupport
+        open={isSoftwareSupportOpen}
+        onClose={() => setIsSoftwareSupportOpen(false)}
+        isSoftwareSupport={true}
       />
     </div>
   );

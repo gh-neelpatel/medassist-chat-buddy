@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,14 +24,16 @@ interface ContactSupportProps {
   appointmentId?: string;
   open: boolean;
   onClose: () => void;
+  isSoftwareSupport?: boolean;
 }
 
 const ContactSupport: React.FC<ContactSupportProps> = ({
   appointmentId,
   open,
-  onClose
+  onClose,
+  isSoftwareSupport = false
 }) => {
-  const [topic, setTopic] = useState("question");
+  const [topic, setTopic] = useState(isSoftwareSupport ? "technical" : "question");
   const [message, setMessage] = useState("");
 
   const handleSubmit = () => {
@@ -42,6 +44,7 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     
     // In a real app, we would make an API call to send the support message
     toast.success("Your message has been sent to support. We'll get back to you shortly.");
+    setMessage(""); // Reset message
     onClose();
   };
   
@@ -49,11 +52,8 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="flex justify-between items-center">
+          <DialogTitle className="text-lg font-semibold">
             Contact Support
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </DialogTitle>
         </DialogHeader>
         
@@ -69,6 +69,12 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
             </div>
           )}
           
+          {isSoftwareSupport && (
+            <div className="text-sm text-muted-foreground">
+              Use this form to report software issues or get help using MedAssist.
+            </div>
+          )}
+          
           <div className="space-y-2">
             <Label htmlFor="topic">Topic</Label>
             <Select value={topic} onValueChange={setTopic}>
@@ -79,8 +85,12 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
                 <SelectItem value="question">General Question</SelectItem>
                 <SelectItem value="billing">Billing Issue</SelectItem>
                 <SelectItem value="technical">Technical Problem</SelectItem>
-                <SelectItem value="reschedule">Reschedule Help</SelectItem>
-                <SelectItem value="cancellation">Cancellation</SelectItem>
+                {!isSoftwareSupport && (
+                  <>
+                    <SelectItem value="reschedule">Reschedule Help</SelectItem>
+                    <SelectItem value="cancellation">Cancellation</SelectItem>
+                  </>
+                )}
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
