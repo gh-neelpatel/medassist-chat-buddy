@@ -23,6 +23,7 @@ import { toast } from "sonner";
 interface ContactSupportProps {
   open: boolean;
   onClose: () => void;
+  appointmentId?: string; // Make appointmentId optional
 }
 
 type SupportType = "help" | "bug";
@@ -30,6 +31,7 @@ type SupportType = "help" | "bug";
 const ContactSupport: React.FC<ContactSupportProps> = ({
   open,
   onClose,
+  appointmentId, // Add appointmentId to the destructured props
 }) => {
   const [supportType, setSupportType] = useState<SupportType>("help");
   const [message, setMessage] = useState("");
@@ -41,6 +43,11 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     }
     
     // In a real app, we would make an API call to send the support message
+    // If we have an appointmentId, include it in the API call
+    const supportMessage = appointmentId 
+      ? `Regarding appointment #${appointmentId}: ${message}`
+      : message;
+    
     toast.success(
       supportType === "help" 
         ? "Your request has been sent to our support team. We'll get back to you shortly."
@@ -103,6 +110,7 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
           </div>
           
           <div className="text-sm text-muted-foreground">
+            {appointmentId && <p className="mb-2 font-medium">Regarding Appointment #{appointmentId}</p>}
             {supportType === "help" ? (
               "Support hours: Monday to Friday, 9am to 5pm. We typically respond within 24 hours."
             ) : (
