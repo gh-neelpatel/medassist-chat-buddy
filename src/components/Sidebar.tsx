@@ -1,10 +1,10 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Calendar, Home, Heart, MessageSquare, FileText, MapPin, Pill } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ContactSupport from './ContactSupport';
 
 interface SidebarLinkProps {
   to: string;
@@ -38,6 +38,7 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const isMobile = useIsMobile();
+  const [isContactSupportOpen, setIsContactSupportOpen] = useState(false);
   
   const sidebarClasses = cn(
     "bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto transition-all duration-300 ease-in-out",
@@ -49,7 +50,6 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     isMobile && isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
   );
   
-  // If sidebar is closed on mobile, don't render sidebar content
   if (isMobile && !isOpen) {
     return (
       <div className={overlayClasses} onClick={toggleSidebar}></div>
@@ -77,11 +77,23 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               <p className="text-xs text-muted-foreground pt-1">
                 Contact our support team for assistance with using MedAssist.
               </p>
-              <Button variant="outline" size="sm" className="mt-3 w-full">Contact Support</Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="mt-3 w-full"
+                onClick={() => setIsContactSupportOpen(true)}
+              >
+                Contact Support
+              </Button>
             </div>
           </div>
         </div>
       </aside>
+
+      <ContactSupport
+        open={isContactSupportOpen}
+        onClose={() => setIsContactSupportOpen(false)}
+      />
     </>
   );
 };

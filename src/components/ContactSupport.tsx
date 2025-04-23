@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { MessageSquare, Bug } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,19 +21,17 @@ import {
 import { toast } from "sonner";
 
 interface ContactSupportProps {
-  appointmentId?: string;
   open: boolean;
   onClose: () => void;
-  isSoftwareSupport?: boolean;
 }
 
+type SupportType = "help" | "bug";
+
 const ContactSupport: React.FC<ContactSupportProps> = ({
-  appointmentId,
   open,
   onClose,
-  isSoftwareSupport = false
 }) => {
-  const [topic, setTopic] = useState(isSoftwareSupport ? "technical" : "question");
+  const [supportType, setSupportType] = useState<SupportType>("help");
   const [message, setMessage] = useState("");
 
   const handleSubmit = () => {
@@ -43,7 +41,11 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     }
     
     // In a real app, we would make an API call to send the support message
-    toast.success("Your message has been sent to support. We'll get back to you shortly.");
+    toast.success(
+      supportType === "help" 
+        ? "Your request has been sent to our support team. We'll get back to you shortly."
+        : "Thank you for reporting this issue. Our team will investigate it."
+    );
     setMessage(""); // Reset message
     onClose();
   };
@@ -52,55 +54,48 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            Contact Support
+          <DialogTitle className="text-lg font-semibold flex items-center gap-2">
+            {supportType === "help" ? (
+              <>
+                <MessageSquare className="h-5 w-5 text-primary" />
+                Get Help
+              </>
+            ) : (
+              <>
+                <Bug className="h-5 w-5 text-primary" />
+                Report an Issue
+              </>
+            )}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
-          <div className="flex items-center space-x-2">
-            <MessageCircle className="h-5 w-5 text-primary" />
-            <span className="text-lg font-medium">How can we help you?</span>
-          </div>
-          
-          {appointmentId && (
-            <div className="text-sm text-muted-foreground">
-              This conversation will reference appointment #{appointmentId.substring(0, 8)}
-            </div>
-          )}
-          
-          {isSoftwareSupport && (
-            <div className="text-sm text-muted-foreground">
-              Use this form to report software issues or get help using MedAssist.
-            </div>
-          )}
-          
           <div className="space-y-2">
-            <Label htmlFor="topic">Topic</Label>
-            <Select value={topic} onValueChange={setTopic}>
+            <Label htmlFor="type">What can we help you with?</Label>
+            <Select value={supportType} onValueChange={(value: SupportType) => setSupportType(value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select topic" />
+                <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="question">General Question</SelectItem>
-                <SelectItem value="billing">Billing Issue</SelectItem>
-                <SelectItem value="technical">Technical Problem</SelectItem>
-                {!isSoftwareSupport && (
-                  <>
-                    <SelectItem value="reschedule">Reschedule Help</SelectItem>
-                    <SelectItem value="cancellation">Cancellation</SelectItem>
-                  </>
-                )}
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="help">I need help using MedAssist</SelectItem>
+                <SelectItem value="bug">I found an issue or bug</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">
+              {supportType === "help" 
+                ? "How can we assist you today?" 
+                : "Please describe the issue you encountered"}
+            </Label>
             <Textarea
               id="message"
-              placeholder="Please describe your issue or question..."
+              placeholder={
+                supportType === "help"
+                  ? "Describe what you need help with..."
+                  : "Please provide details about the issue, including what you were doing when it occurred..."
+              }
               value={message}
               onChange={e => setMessage(e.target.value)}
               rows={5}
@@ -108,7 +103,11 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
           </div>
           
           <div className="text-sm text-muted-foreground">
-            Support hours: Monday to Friday, 9am to 5pm. We typically respond within 24 hours.
+            {supportType === "help" ? (
+              "Support hours: Monday to Friday, 9am to 5pm. We typically respond within 24 hours."
+            ) : (
+              "Our development team reviews all reported issues and will investigate as soon as possible."
+            )}
           </div>
         </div>
         
