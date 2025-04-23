@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Heart, Medication, FileText } from 'lucide-react';
+import { Calendar, Heart, Pill, FileText } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 
@@ -52,7 +52,7 @@ const DashboardCards = () => {
     {
       title: "Medication Tracker",
       description: "Track your medications, get reminders, and manage your prescriptions.",
-      icon: <Medication size={20} className="text-primary" />,
+      icon: <Pill size={20} className="text-primary" />,
       linkText: "Manage Medications",
       linkTo: "/medications"
     },

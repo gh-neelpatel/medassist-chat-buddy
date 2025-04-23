@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Medication, Clock, Calendar } from 'lucide-react';
+import { Pill, Clock, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -195,7 +196,7 @@ const MedicationTracker = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="bg-primary/10 p-2 rounded-full">
-                    <Medication size={18} className="text-primary" />
+                    <Pill size={18} className="text-primary" />
                   </div>
                   <CardTitle className="text-lg">{medication.name}</CardTitle>
                 </div>
@@ -238,7 +239,7 @@ const MedicationTracker = () => {
 
       {medications.length === 0 && (
         <div className="text-center py-8">
-          <Medication size={40} className="mx-auto text-muted-foreground mb-4" />
+          <Pill size={40} className="mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium">No medications yet</h3>
           <p className="text-muted-foreground mb-4">Add medications to track them and receive reminders</p>
           <Button onClick={() => setIsDialogOpen(true)}>Add Your First Medication</Button>

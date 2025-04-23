@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Calendar, Home, Heart, MessageSquare, Medication, MapPin, FileText } from 'lucide-react';
+import { Calendar, Home, Heart, MessageSquare, FileText, MapPin, Pill } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -65,7 +65,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
             <SidebarLink to="/" icon={<Home size={18} />} label="Dashboard" />
             <SidebarLink to="/chat" icon={<MessageSquare size={18} />} label="Chat" />
             <SidebarLink to="/health-records" icon={<FileText size={18} />} label="Health Records" />
-            <SidebarLink to="/medications" icon={<Medication size={18} />} label="Medications" />
+            <SidebarLink to="/medications" icon={<Pill size={18} />} label="Medications" />
             <SidebarLink to="/doctor-finder" icon={<Heart size={18} />} label="Find Doctors" />
             <SidebarLink to="/facilities" icon={<MapPin size={18} />} label="Healthcare Facilities" />
             <SidebarLink to="/appointments" icon={<Calendar size={18} />} label="Appointments" />
