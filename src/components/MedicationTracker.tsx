@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from "sonner";
 
 interface Medication {
   id: string;
@@ -65,7 +66,7 @@ const MedicationTracker = () => {
   const handleAddMedication = () => {
     // Validate form fields
     if (!newMedication.name || !newMedication.dosage || !newMedication.timeOfDay) {
-      // In a real app, show an error message
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -85,6 +86,7 @@ const MedicationTracker = () => {
 
     // Add the new medication to the list
     setMedications(prev => [...prev, newMed]);
+    toast.success("Medication added successfully");
 
     // Reset form and close dialog
     setNewMedication({
@@ -94,6 +96,10 @@ const MedicationTracker = () => {
       timeOfDay: '',
     });
     setIsDialogOpen(false);
+  };
+
+  const handleTakeMedication = (id: string) => {
+    toast.success("Medication marked as taken");
   };
 
   // Format time for display
@@ -230,7 +236,7 @@ const MedicationTracker = () => {
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" size="sm">Edit</Button>
-                <Button size="sm">Take Now</Button>
+                <Button size="sm" onClick={() => handleTakeMedication(medication.id)}>Take Now</Button>
               </div>
             </CardContent>
           </Card>

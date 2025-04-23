@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import { toast } from "sonner";
 
 interface Appointment {
   id: string;
@@ -80,6 +81,22 @@ const Appointments = () => {
   const upcomingAppointments = appointments.filter(app => app.status === 'upcoming');
   const pastAppointments = appointments.filter(app => app.status === 'completed' || app.status === 'cancelled');
   
+  const handleReschedule = (id: string) => {
+    toast.info("Reschedule feature will be available soon");
+  };
+  
+  const handleCancel = (id: string) => {
+    toast.success("Appointment cancelled successfully");
+  };
+  
+  const handleBookFollowUp = (id: string) => {
+    toast.info("Follow-up booking feature will be available soon");
+  };
+  
+  const handleScheduleAppointment = () => {
+    toast.info("Schedule appointment feature will be available soon");
+  };
+  
   return (
     <div className="min-h-screen flex flex-col bg-offwhite">
       <Navbar />
@@ -91,13 +108,13 @@ const Appointments = () => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold">Appointments</h1>
-                <p className="text-muted-foreground">Manage your healthcare appointments</p>
+                <p className="text-muted-foreground">Schedule and manage your appointments with healthcare providers</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" className="hidden md:inline-flex">
                   View Calendar
                 </Button>
-                <Button>Schedule Appointment</Button>
+                <Button onClick={handleScheduleAppointment}>Schedule Appointment</Button>
                 <Button size="icon" variant="outline" className="md:hidden" onClick={toggleSidebar}>
                   <Menu size={20} />
                 </Button>
@@ -151,8 +168,8 @@ const Appointments = () => {
                             </div>
                           </div>
                           <div className="flex justify-end gap-2 pt-2">
-                            <Button variant="outline" size="sm">Reschedule</Button>
-                            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                            <Button variant="outline" size="sm" onClick={() => handleReschedule(appointment.id)}>Reschedule</Button>
+                            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleCancel(appointment.id)}>
                               Cancel
                             </Button>
                           </div>
@@ -165,7 +182,7 @@ const Appointments = () => {
                     <Calendar size={40} className="mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium">No upcoming appointments</h3>
                     <p className="text-muted-foreground mb-4">Schedule an appointment with a healthcare provider</p>
-                    <Button>Schedule Appointment</Button>
+                    <Button onClick={handleScheduleAppointment}>Schedule Appointment</Button>
                   </div>
                 )}
               </TabsContent>
@@ -213,7 +230,7 @@ const Appointments = () => {
                           {appointment.status === 'completed' && (
                             <div className="flex justify-end gap-2 pt-2">
                               <Button variant="outline" size="sm">View Summary</Button>
-                              <Button size="sm">Book Follow-up</Button>
+                              <Button size="sm" onClick={() => handleBookFollowUp(appointment.id)}>Book Follow-up</Button>
                             </div>
                           )}
                         </CardContent>

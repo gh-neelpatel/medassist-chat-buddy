@@ -24,7 +24,7 @@ const Medications = () => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold">Medication Tracker</h1>
-                <p className="text-muted-foreground">Manage and track your medications</p>
+                <p className="text-muted-foreground">Track your medications, get reminders, and manage your prescriptions</p>
               </div>
               <Button size="icon" variant="outline" className="md:hidden" onClick={toggleSidebar}>
                 <Menu size={20} />
