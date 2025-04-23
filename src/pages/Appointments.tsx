@@ -1,25 +1,23 @@
 
 import React, { useState } from 'react';
-import { Menu, Calendar, Clock, MapPin } from 'lucide-react';
+import { Menu, Calendar, Clock, MapPin, PhoneCall } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { toast } from "sonner";
-
-interface Appointment {
-  id: string;
-  doctorName: string;
-  specialty: string;
-  date: string;
-  time: string;
-  location: string;
-  status: 'upcoming' | 'completed' | 'cancelled';
-}
+import { Appointment } from "@/types/appointment";
+import AppointmentCalendarView from "@/components/AppointmentCalendarView";
+import AppointmentReschedule from "@/components/AppointmentReschedule";
+import ContactSupport from "@/components/ContactSupport";
 
 const Appointments = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCalendarViewOpen, setIsCalendarViewOpen] = useState(false);
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const [isContactSupportOpen, setIsContactSupportOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -81,8 +79,9 @@ const Appointments = () => {
   const upcomingAppointments = appointments.filter(app => app.status === 'upcoming');
   const pastAppointments = appointments.filter(app => app.status === 'completed' || app.status === 'cancelled');
   
-  const handleReschedule = (id: string) => {
-    toast.info("Reschedule feature will be available soon");
+  const handleReschedule = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setIsRescheduleOpen(true);
   };
   
   const handleCancel = (id: string) => {
@@ -95,6 +94,15 @@ const Appointments = () => {
   
   const handleScheduleAppointment = () => {
     toast.info("Schedule appointment feature will be available soon");
+  };
+
+  const handleViewCalendar = () => {
+    setIsCalendarViewOpen(true);
+  };
+
+  const handleContactSupport = (appointment: Appointment | null = null) => {
+    setSelectedAppointment(appointment);
+    setIsContactSupportOpen(true);
   };
   
   return (
@@ -111,7 +119,7 @@ const Appointments = () => {
                 <p className="text-muted-foreground">Schedule and manage your appointments with healthcare providers</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" className="hidden md:inline-flex">
+                <Button variant="outline" className="hidden md:inline-flex" onClick={handleViewCalendar}>
                   View Calendar
                 </Button>
                 <Button onClick={handleScheduleAppointment}>Schedule Appointment</Button>
@@ -167,11 +175,22 @@ const Appointments = () => {
                               <p className="text-sm">{appointment.location}</p>
                             </div>
                           </div>
-                          <div className="flex justify-end gap-2 pt-2">
-                            <Button variant="outline" size="sm" onClick={() => handleReschedule(appointment.id)}>Reschedule</Button>
-                            <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleCancel(appointment.id)}>
-                              Cancel
+                          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 pt-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex gap-1" 
+                              onClick={() => handleContactSupport(appointment)}
+                            >
+                              <PhoneCall size={16} />
+                              Contact Support
                             </Button>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm" onClick={() => handleReschedule(appointment)}>Reschedule</Button>
+                              <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleCancel(appointment.id)}>
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -228,9 +247,20 @@ const Appointments = () => {
                             </div>
                           </div>
                           {appointment.status === 'completed' && (
-                            <div className="flex justify-end gap-2 pt-2">
-                              <Button variant="outline" size="sm">View Summary</Button>
-                              <Button size="sm" onClick={() => handleBookFollowUp(appointment.id)}>Book Follow-up</Button>
+                            <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 pt-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                className="flex gap-1" 
+                                onClick={() => handleContactSupport(appointment)}
+                              >
+                                <PhoneCall size={16} />
+                                Contact Support
+                              </Button>
+                              <div className="flex gap-2">
+                                <Button variant="outline" size="sm">View Summary</Button>
+                                <Button size="sm" onClick={() => handleBookFollowUp(appointment.id)}>Book Follow-up</Button>
+                              </div>
                             </div>
                           )}
                         </CardContent>
@@ -249,6 +279,34 @@ const Appointments = () => {
           </div>
         </main>
       </div>
+      
+      {/* Dialogs */}
+      <AppointmentCalendarView
+        appointments={appointments}
+        open={isCalendarViewOpen}
+        onClose={() => setIsCalendarViewOpen(false)}
+      />
+      
+      {selectedAppointment && (
+        <AppointmentReschedule
+          appointmentId={selectedAppointment.id}
+          doctorName={selectedAppointment.doctorName}
+          specialty={selectedAppointment.specialty}
+          currentDate={selectedAppointment.date}
+          currentTime={selectedAppointment.time}
+          open={isRescheduleOpen}
+          onClose={() => setIsRescheduleOpen(false)}
+        />
+      )}
+      
+      <ContactSupport
+        appointmentId={selectedAppointment?.id}
+        open={isContactSupportOpen}
+        onClose={() => {
+          setIsContactSupportOpen(false);
+          setSelectedAppointment(null);
+        }}
+      />
     </div>
   );
 };
