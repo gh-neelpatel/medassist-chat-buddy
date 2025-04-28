@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { format } from "date-fns";
-import { X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -45,11 +44,8 @@ const AppointmentCalendarView: React.FC<AppointmentCalendarViewProps> = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="flex justify-between items-center">
+          <DialogTitle>
             Appointments Calendar
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </DialogTitle>
           <DialogDescription>
             View your appointments in calendar format.
